@@ -12,29 +12,31 @@ spring:
   cloud:
     consul:
       host: localhost
-      port: 8500
+      port: 8501
       discovery:
         health-check-path: /health
     gateway:
       routes:
-        - id: service-customers-route
-          uri: lb://service-customers
+        - id: service-unit2-route
+          uri: lb://service-unit2
           predicates:
-            - Path=/api/customers/**
+            - Path=/api/unit2/**
           filters:
-            - RewritePath=/api/customers/(?<remaining>.*), /api/customers/${remaining}
-        - id: service-contracts-route
-          uri: lb://service-contracts
+            - RewritePath=/api/unit2/(?<remaining>.*), /api/v1/${remaining}
+
+        - id: service-nodejs-route
+          uri: lb://service-nodejs
           predicates:
-            - Path=/api/contracts/**
+            - Path=/api/nodejs/**
           filters:
-            - RewritePath=/api/contracts/(?<remaining>.*), /api/contracts/${remaining}
-        - id: service-searcher-route
-          uri: lb://service-searcher
+            - RewritePath=/api/nodejs/(?<remaining>.*), /api/nodejs/${remaining}
+        - id: service-frontend-route
+          uri: lb://service-frontend
           predicates:
-            - Path=/api/search/**
+            - Path=/api/frontend/**
           filters:
-            - RewritePath=/api/search/(?<remaining>.*), /api/${remaining}
+            - RewritePath=/api/frontend/(?<remaining>.*), /api/frontend/${remaining}
+
 
 resilience4j:
   circuitbreaker:
@@ -46,7 +48,6 @@ resilience4j:
           - 2s
         minimum-number-of-calls: 3
         permitted-number-of-calls-in-half-open-state: 1
-
 
 management:
   endpoint:

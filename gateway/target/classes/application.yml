@@ -1,0 +1,73 @@
+server:
+  port: 1000
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: gateway
+  config:
+    import: optional:consul:/
+  cloud:
+    consul:
+      host: localhost
+      port: 8501
+      discovery:
+        health-check-path: /health
+    gateway:
+      routes:
+        - id: service-unit2-route
+          uri: lb://service-unit2
+          predicates:
+            - Path=/api/unit2/**
+          filters:
+            - RewritePath=/api/unit2/(?<remaining>.*), /api/v1/${remaining}
+#        - id: service-unit2-users-route
+#          uri: lb://service-unit2
+#          predicates:
+#            - Path=/api/unit2/users/**
+#          filters:
+#            - RewritePath=/api/unit2/users/(?<remaining>.*), /api/v1/users/${remaining}
+#        - id: service-unit2-posts-route
+#          uri: lb://service-unit2
+#          predicates:
+#            - Path=/api/unit2/posts/**
+#          filters:
+#            - RewritePath=/api/unit2/posts/(?<remaining>.*), /api/v1/posts/${remaining}
+
+
+        - id: service-nodejs-route
+          uri: lb://service-nodejs
+          predicates:
+            - Path=/api/nodejs/**
+          filters:
+            - RewritePath=/api/nodejs/(?<remaining>.*), /api/nodejs/${remaining}
+        - id: service-frontend-route
+          uri: lb://service-frontend
+          predicates:
+            - Path=/api/frontend/**
+          filters:
+            - RewritePath=/api/frontend/(?<remaining>.*), /api/frontend/${remaining}
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      services:
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 60
+        slow-call-duration-threshold:
+          - 2s
+        minimum-number-of-calls: 3
+        permitted-number-of-calls-in-half-open-state: 1
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "*"
