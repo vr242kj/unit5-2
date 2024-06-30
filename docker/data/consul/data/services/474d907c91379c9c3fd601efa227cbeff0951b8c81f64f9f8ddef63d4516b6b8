@@ -1,0 +1,1 @@
+{"Token":"","Service":{"ID":"gateway-1000","Service":"gateway","Tags":[],"Address":"7e14e26978bc","Meta":{"secure":"false"},"Port":1000,"Weights":{"Passing":1,"Warning":1},"EnableTagOverride":false,"Proxy":{"Mode":"","MeshGateway":{},"Expose":{}},"Connect":{},"PeerName":"","CreateIndex":0,"ModifyIndex":0},"Source":"remote"}
